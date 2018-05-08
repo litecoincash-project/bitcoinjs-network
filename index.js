@@ -3,6 +3,7 @@ var bitcoin = require('bitcoinjs-lib');
 function GetKeyPair() {
 	var litecoincash = {
                 messagePrefix: '\x19Litecoin Signed Message:\n',
+		bech32: 'lcc',
                 bip32: {
                         public: 0x019da462,
                         private: 0x019d9cfe
