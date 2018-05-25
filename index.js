@@ -16,14 +16,12 @@ function GetKeyPair() {
 	var keyPair = bitcoin.ECPair.makeRandom({network:litecoincash});
 	var address = keyPair.getAddress();	
 	var pubKey = keyPair.getPublicKeyBuffer();
-	
 	var publicKeyHash = bitcoin.crypto.hash160(pubKey);
 	
 	document.writeln("<strong>privKey: " + keyPair.toWIF() + "</strong><br><br>");
-	document.writeln("pubKeyHash: " + publicKeyHash.toString('hex') + "<br>");
-	document.writeln("Legacy address: " + address + "<br><br>");	
+	document.writeln("Legacy address: " + address + "<br>");	
 	
-	var redeemScript = bitcoin.script.witnessPubKeyHash.output.encode(bitcoin.crypto.hash160(pubKey));
+	var redeemScript = bitcoin.script.witnessPubKeyHash.output.encode(publicKeyHash);
 	var scriptPubKey = bitcoin.script.scriptHash.output.encode(bitcoin.crypto.hash160(redeemScript));
 	
 	address = bitcoin.address.fromOutputScript(scriptPubKey, litecoincash);
