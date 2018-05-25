@@ -9,16 +9,28 @@ function GetKeyPair() {
                         private: 0x019d9cfe
                 },
                 pubKeyHash: 28,
-                scriptHash: 5,
+                scriptHash: 50,	// 50 for correct p2sh, 5 for correct scripthash (bitcoinJS doesn't support SCRIPT_ADDRESS2)
                 wif: 176
         };
 
 	var keyPair = bitcoin.ECPair.makeRandom({network:litecoincash});
 	var address = keyPair.getAddress();	
-	var publicKeyHash = bitcoin.crypto.hash160(keyPair.getPublicKeyBuffer());
-	document.writeln("<strong>pubKeyHash: " + publicKeyHash.toString('hex') + "</strong><br>");
-	document.writeln("privKey: " + keyPair.toWIF() + "<br>");
-	document.writeln("address: " + address + "<br>");
+	var pubKey = keyPair.getPublicKeyBuffer();
+	
+	var publicKeyHash = bitcoin.crypto.hash160(pubKey);
+	
+	document.writeln("<strong>privKey: " + keyPair.toWIF() + "</strong><br>");
+	document.writeln("pubKeyHash: " + publicKeyHash.toString('hex') + "<br>");
+	document.writeln("Legacy address: " + address + "<br>");	
+	
+	var redeemScript = bitcoin.script.witnessPubKeyHash.output.encode(bitcoin.crypto.hash160(pubKey));
+	var scriptPubKey = bitcoin.script.scriptHash.output.encode(bitcoin.crypto.hash160(redeemScript));
+	address = bitcoin.address.fromOutputScript(scriptPubKey, litecoincash);
+	document.writeln("P2SH address: " + address + "<br>");
+	
+	var scriptPubKey = bitcoin.script.witnessPubKeyHash.output.encode(bitcoin.crypto.hash160(pubKey))
+	var address = bitcoin.address.fromOutputScript(scriptPubKey, litecoincash)
+	document.writeln("Bech32 address: " + address + "<br>");
 }
 
 module.exports = {
