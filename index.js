@@ -3,7 +3,7 @@ var bitcoin = require('bitcoinjs-lib');
 function GetKeyPair() {
 	var litecoincash = {
                 messagePrefix: '\x19Litecoin Signed Message:\n',
-		bech32: 'lcc',
+                bech32: 'lcc',
                 bip32: {
                         public: 0x019da462,
                         private: 0x019d9cfe
@@ -19,17 +19,17 @@ function GetKeyPair() {
 	
 	var publicKeyHash = bitcoin.crypto.hash160(pubKey);
 	
-	document.writeln("<strong>privKey: " + keyPair.toWIF() + "</strong><br>");
+	document.writeln("<strong>privKey: " + keyPair.toWIF() + "</strong><br><br>");
 	document.writeln("pubKeyHash: " + publicKeyHash.toString('hex') + "<br>");
-	document.writeln("Legacy address: " + address + "<br>");	
+	document.writeln("Legacy address: " + address + "<br><br>");	
 	
 	var redeemScript = bitcoin.script.witnessPubKeyHash.output.encode(bitcoin.crypto.hash160(pubKey));
 	var scriptPubKey = bitcoin.script.scriptHash.output.encode(bitcoin.crypto.hash160(redeemScript));
+	
 	address = bitcoin.address.fromOutputScript(scriptPubKey, litecoincash);
 	document.writeln("P2SH address: " + address + "<br>");
 	
-	var scriptPubKey = bitcoin.script.witnessPubKeyHash.output.encode(bitcoin.crypto.hash160(pubKey))
-	var address = bitcoin.address.fromOutputScript(scriptPubKey, litecoincash)
+	var address = bitcoin.address.fromOutputScript(redeemScript, litecoincash)
 	document.writeln("Bech32 address: " + address + "<br>");
 }
 
